@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <IsPackable>false</IsPackable>
-    <RootNamespace>RosterDutyReminder.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ToongabbieUtility.RosterDutyReminder\ToongabbieUtility.RosterDutyReminder.csproj" />
+    <ProjectReference Include="..\ToongabbieUtility.ElectricityBillReminder\ToongabbieUtility.ElectricityBillReminder.csproj" />
   </ItemGroup>
 
 </Project>

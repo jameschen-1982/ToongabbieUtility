@@ -75,25 +75,28 @@ namespace ToongabbieUtility.RosterDutyReminder
 
          foreach (var tenant in allTenants)
          {
-            var snsRequest = new PublishRequest
+            if (!string.IsNullOrWhiteSpace(tenant.PhoneNumber))
             {
-               Message = $"Hello everyone. Roster duty from next Monday to Sunday is {currentOnDutyTenant.TenantName}.\n\n" +
-                         $"{currentOnDutyTenant.TenantName}, please make sure the bin in the kitchen is cleared " +
-                         $"regularly and the wheelie bins are pushed out on Tuesday night.\n\n" +
-                         $"Everyone please also clean the common area after you use (kitchen and toilets). Thank you. \n\n" +
-                         $"James (Reply to 0430227759)",
-               PhoneNumber = tenant.PhoneNumber,
-            };
+               var snsRequest = new PublishRequest
+               {
+                  Message = $"Hello everyone. Roster duty from next Monday to Sunday is {currentOnDutyTenant.TenantName}.\n\n" +
+                            $"{currentOnDutyTenant.TenantName}, please make sure the bin in the kitchen is cleared " +
+                            $"regularly and the wheelie bins are pushed out on Tuesday night.\n\n" +
+                            $"Everyone please also clean the common area after you use (kitchen and toilets). Thank you. \n\n" +
+                            $"James (Reply to 0430227759)",
+                  PhoneNumber = tenant.PhoneNumber,
+               };
 
-            try
-            {
-               Console.WriteLine($"Sending: {snsRequest.Message} to {tenant.PhoneNumber}");
-               var response = await _notificationService.PublishAsync(snsRequest);
-               Console.Write($"Result: {response.HttpStatusCode}, {response.MessageId}");
-            }
-            catch (Exception ex)
-            {
-               Console.WriteLine($"Error sending message: {ex}");
+               try
+               {
+                  Console.WriteLine($"Sending: {snsRequest.Message} to {tenant.PhoneNumber}");
+                  var response = await _notificationService.PublishAsync(snsRequest);
+                  Console.Write($"Result: {response.HttpStatusCode}, {response.MessageId}");
+               }
+               catch (Exception ex)
+               {
+                  Console.WriteLine($"Error sending message: {ex}");
+               }
             }
          }
       }

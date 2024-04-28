@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lambda", "lambda", "{2B92CB59-05AB-4A4E-99AE-44FFD38B4640}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToongabbieUtility.ElectricityBillReminder", "lambda\ToongabbieUtility.ElectricityBillReminder\ToongabbieUtility.ElectricityBillReminder.csproj", "{7683D63B-EE87-4DE1-9D39-A282D9879767}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToongabbieUtility.ElectricityBillReminder.Tests", "lambda\ToongabbieUtility.ElectricityBillReminder.Tests\ToongabbieUtility.ElectricityBillReminder.Tests.csproj", "{D82F2B4C-42BA-49A2-BAD1-3A2249645DF0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3F9AC509-3001-402C-B09B-92D6F9D6E56B}"
+ProjectSection(SolutionItems) = preProject
+	build.ps1 = build.ps1
+	README.md = README.md
+	ToongabbieUtility.ElectricityBillReminder.postman_collection.json = ToongabbieUtility.ElectricityBillReminder.postman_collection.json
+EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7683D63B-EE87-4DE1-9D39-A282D9879767}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7683D63B-EE87-4DE1-9D39-A282D9879767}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7683D63B-EE87-4DE1-9D39-A282D9879767}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7683D63B-EE87-4DE1-9D39-A282D9879767}.Debug|x64.Build.0 = Debug|Any CPU
+		{7683D63B-EE87-4DE1-9D39-A282D9879767}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7683D63B-EE87-4DE1-9D39-A282D9879767}.Debug|x86.Build.0 = Debug|Any CPU
+		{7683D63B-EE87-4DE1-9D39-A282D9879767}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7683D63B-EE87-4DE1-9D39-A282D9879767}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7683D63B-EE87-4DE1-9D39-A282D9879767}.Release|x64.ActiveCfg = Release|Any CPU
+		{7683D63B-EE87-4DE1-9D39-A282D9879767}.Release|x64.Build.0 = Release|Any CPU
+		{7683D63B-EE87-4DE1-9D39-A282D9879767}.Release|x86.ActiveCfg = Release|Any CPU
+		{7683D63B-EE87-4DE1-9D39-A282D9879767}.Release|x86.Build.0 = Release|Any CPU
+		{D82F2B4C-42BA-49A2-BAD1-3A2249645DF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D82F2B4C-42BA-49A2-BAD1-3A2249645DF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D82F2B4C-42BA-49A2-BAD1-3A2249645DF0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D82F2B4C-42BA-49A2-BAD1-3A2249645DF0}.Debug|x64.Build.0 = Debug|Any CPU
+		{D82F2B4C-42BA-49A2-BAD1-3A2249645DF0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D82F2B4C-42BA-49A2-BAD1-3A2249645DF0}.Debug|x86.Build.0 = Debug|Any CPU
+		{D82F2B4C-42BA-49A2-BAD1-3A2249645DF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D82F2B4C-42BA-49A2-BAD1-3A2249645DF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D82F2B4C-42BA-49A2-BAD1-3A2249645DF0}.Release|x64.ActiveCfg = Release|Any CPU
+		{D82F2B4C-42BA-49A2-BAD1-3A2249645DF0}.Release|x64.Build.0 = Release|Any CPU
+		{D82F2B4C-42BA-49A2-BAD1-3A2249645DF0}.Release|x86.ActiveCfg = Release|Any CPU
+		{D82F2B4C-42BA-49A2-BAD1-3A2249645DF0}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7683D63B-EE87-4DE1-9D39-A282D9879767} = {2B92CB59-05AB-4A4E-99AE-44FFD38B4640}
+		{D82F2B4C-42BA-49A2-BAD1-3A2249645DF0} = {2B92CB59-05AB-4A4E-99AE-44FFD38B4640}
+	EndGlobalSection
+EndGlobal

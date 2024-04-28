@@ -6,8 +6,4 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-      <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.302.24" />
-    </ItemGroup>
-
 </Project>

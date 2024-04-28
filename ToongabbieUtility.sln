@@ -6,6 +6,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToongabbieUtility.RosterDut
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToongabbieUtility.RosterDutyReminder.Tests", "RosterDutyReminder\lambda\ToongabbieUtility.RosterDutyReminder.Tests\ToongabbieUtility.RosterDutyReminder.Tests.csproj", "{B347910E-81B8-4058-A359-7609C2F5E669}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToongabbieUtility.ElectricityBillReminder", "ElectrityBillReminder\lambda\ToongabbieUtility.ElectricityBillReminder\ToongabbieUtility.ElectricityBillReminder.csproj", "{37FB54AB-C114-48F7-BF98-89D249CF4309}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToongabbieUtility.ElectricityBillReminder.Tests", "ElectrityBillReminder\lambda\ToongabbieUtility.ElectricityBillReminder.Tests\ToongabbieUtility.ElectricityBillReminder.Tests.csproj", "{FD73DA97-95AD-46B8-AE52-7DD83F7C69B8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{190876CF-5CE8-4CF9-B0E3-3F6840584CB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToongabbieUtility.Common", "ToongabbieUtility.Common\ToongabbieUtility.Common.csproj", "{558BE0DD-A010-4F45-B064-87EC63FB99C1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +32,21 @@ Global
 		{B347910E-81B8-4058-A359-7609C2F5E669}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B347910E-81B8-4058-A359-7609C2F5E669}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B347910E-81B8-4058-A359-7609C2F5E669}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37FB54AB-C114-48F7-BF98-89D249CF4309}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37FB54AB-C114-48F7-BF98-89D249CF4309}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37FB54AB-C114-48F7-BF98-89D249CF4309}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37FB54AB-C114-48F7-BF98-89D249CF4309}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD73DA97-95AD-46B8-AE52-7DD83F7C69B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD73DA97-95AD-46B8-AE52-7DD83F7C69B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD73DA97-95AD-46B8-AE52-7DD83F7C69B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD73DA97-95AD-46B8-AE52-7DD83F7C69B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{558BE0DD-A010-4F45-B064-87EC63FB99C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{558BE0DD-A010-4F45-B064-87EC63FB99C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{558BE0DD-A010-4F45-B064-87EC63FB99C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{558BE0DD-A010-4F45-B064-87EC63FB99C1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B347910E-81B8-4058-A359-7609C2F5E669} = {190876CF-5CE8-4CF9-B0E3-3F6840584CB9}
+		{FD73DA97-95AD-46B8-AE52-7DD83F7C69B8} = {190876CF-5CE8-4CF9-B0E3-3F6840584CB9}
 	EndGlobalSection
 EndGlobal
