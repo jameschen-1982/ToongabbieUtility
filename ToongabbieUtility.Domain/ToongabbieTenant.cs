@@ -10,7 +10,7 @@ public class ToongabbieTenant
 
     [DynamoDBProperty] public string TenantName { get; set; }
     [DynamoDBProperty] public string PhoneNumber { get; set; }
-    [DynamoDBProperty] public int Sid { get; set; }
+    [DynamoDBProperty] public string Sid { get; set; }
     [DynamoDBProperty] public bool IsOnRosterDuty { get; set; }
     [DynamoDBProperty] public string PaymentDue { get; set; }
 }
