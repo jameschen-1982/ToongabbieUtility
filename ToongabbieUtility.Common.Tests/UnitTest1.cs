@@ -32,8 +32,8 @@ public class Tests
          var result = ElectricityBillFormatter.GenerateReportForTenant(testData, unitPrice);
 
          result.Should().Be(
-@"Monday, 29 April:	0h 30m, 0.2 Kwh, $0.05
-Tuesday, 30 April:	1h 01m, 1.0 Kwh, $0.30
-Total:	1h 31m, 1.2 Kwh, $0.35");
+@"Monday, 29 April: 0h 30m, 0.2Kwh, $0.05
+Tuesday, 30 April: 1h 01m, 1.0Kwh, $0.30
+Total: 1h 31m, 1.2Kwh, $0.35");
     }
 }

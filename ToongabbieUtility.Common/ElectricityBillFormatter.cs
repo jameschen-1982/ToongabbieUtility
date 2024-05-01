@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
 using ToongabbieUtility.Domain;
 
 namespace ToongabbieUtility.Common;
@@ -17,6 +18,10 @@ public static class ElectricityBillFormatter
     }
     public static string GenerateReportForTenant(List<DailyHeaterUsage> dailyUsages, decimal unitPrice)
     {
+        CultureInfo culture = CultureInfo.CurrentCulture.Clone() as CultureInfo;
+        culture.NumberFormat.CurrencySymbol = "$";
+        CultureInfo.CurrentCulture = culture;
+        
         var sb = new StringBuilder();
         foreach (var dailyUsage in dailyUsages)
         {

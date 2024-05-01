@@ -29,7 +29,7 @@ resource "aws_s3_object" "roster_duty_reminder_artifact" {
 }
 
 resource "aws_iam_role" "roster_duty_reminder_lambda_role" {
-  name = "${local.stack_prefix}-lambda-rdr-role"
+  name = "${local.stack_prefix}-rdr-lambda-role"
 
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
@@ -99,9 +99,7 @@ data "aws_iam_policy_document" "roster_duty_reminder_lambda_policy_doc" {
       "dynamodb:UpdateItem",
       "dynamodb:DescribeTable"
     ]
-    resources = [
-      var.tenant_table_arn
-    ]
+    resources = var.dynamo_table_arns
   }
 
   statement {
