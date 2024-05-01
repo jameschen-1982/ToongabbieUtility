@@ -38,21 +38,22 @@ namespace ToongabbieUtility.ElectricityBillReminder
       {
          var now = _timeProvider.GetUtcNow();
          var sydneyToday = TimeZoneInfo.ConvertTime(now, _sydneyTimeZone).Date;
+         var (mondayBeforeLastSunday, lastSunday) = DateTimeHelper.GetLastWholeWeek(sydneyToday);
 
          var allTenants = await _amazonDynamoDb.ScanAsync<ToongabbieTenant>(new List<ScanCondition>())
             .GetRemainingAsync();
+         var billedTenants = allTenants.Where(t => !string.IsNullOrEmpty(t.Sid)).ToList();
 
-         var sensors = await _amazonDynamoDb.ScanAsync<EfergySensor>(new List<ScanCondition>()).GetRemainingAsync();
+         var sensors = (await _amazonDynamoDb.ScanAsync<EfergySensor>(new List<ScanCondition>()).GetRemainingAsync())
+            .Where(s => billedTenants.Any(t => t.Sid == s.Sid)).ToList();
 
          var keyValuePairs = await Task.WhenAll(sensors.Select(async s =>
             new KeyValuePair<string, List<DailyHeaterUsage>>(s.Sid,
-               await _amazonDynamoDb.QueryAsync<DailyHeaterUsage>(s.Sid, QueryOperator.Between, [sydneyToday.AddDays(-7), sydneyToday]).GetRemainingAsync())));
+               await _amazonDynamoDb.QueryAsync<DailyHeaterUsage>(s.Sid, QueryOperator.Between, [mondayBeforeLastSunday, lastSunday.AddHours(24)]).GetRemainingAsync())));
 
          var heaterUsageBySensor = keyValuePairs
             .ToDictionary(x => x.Key, x =>
                new { Sensor = sensors.First(s => s.Sid == x.Key), Usages = x.Value });
-
-         var billedTenants = allTenants.Where(t => !string.IsNullOrEmpty(t.Sid)).ToList();
 
          foreach (var billedTenant in billedTenants)
          {
