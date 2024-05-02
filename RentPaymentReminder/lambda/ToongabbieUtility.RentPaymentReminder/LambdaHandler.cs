@@ -56,8 +56,8 @@ namespace ToongabbieUtility.RentPaymentReminder
                try
                {
                   Console.WriteLine($"Sending: {snsRequest.Message} to {duePayment.PhoneNumber}");
-                  // var response = await _notificationService.PublishAsync(snsRequest);
-                  // Console.Write($"Result: {response.HttpStatusCode}, {response.MessageId}");
+                  var response = await _notificationService.PublishAsync(snsRequest);
+                  Console.Write($"Result: {response.HttpStatusCode}, {response.MessageId}");
                }
                catch (Exception ex)
                {
