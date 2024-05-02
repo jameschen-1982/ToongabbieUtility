@@ -16,7 +16,6 @@ using ToongabbieUtility.Domain;
 
 namespace ToongabbieUtility.ElectricityBillReminder
 {
-   // TODO: Rename and implement the required behaviour
    public class LambdaHandler : ILambdaHandler<Request>
    {
       private readonly IDynamoDBContext _amazonDynamoDb;
@@ -36,7 +35,7 @@ namespace ToongabbieUtility.ElectricityBillReminder
       }
       public async Task<ILambdaResult> HandleAsync(Request request, ILambdaContext context)
       {
-         var now = _timeProvider.GetUtcNow();
+         var now = request.Timestamp ?? _timeProvider.GetUtcNow();
          var sydneyToday = TimeZoneInfo.ConvertTime(now, _sydneyTimeZone).Date;
          var (mondayBeforeLastSunday, lastSunday) = DateTimeHelper.GetLastWholeWeek(sydneyToday);
 

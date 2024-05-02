@@ -1,35 +1,35 @@
-resource "aws_lambda_function" "electricity_bill_reminder" {
-  function_name = "${local.stack_prefix}-electricity-bill-reminder"
+resource "aws_lambda_function" "rent_payment_reminder" {
+  function_name = "${local.stack_prefix}-rent-payment-reminder"
 
   s3_bucket = aws_s3_bucket.lambda_bucket.id
-  s3_key    = aws_s3_object.electricity_bill_reminder_artifact.key
+  s3_key    = aws_s3_object.rent_payment_reminder_artifact.key
 
   runtime     = "provided.al2023"
   handler     = "not-used-in-custom-runtime"
   timeout     = 30 # seconds
   memory_size = 512
 
-  source_code_hash = data.archive_file.electricity_bill_reminder_archive.output_base64sha256
+  source_code_hash = data.archive_file.rent_payment_reminder_archive.output_base64sha256
 
-  role = aws_iam_role.electricity_bill_reminder_lambda_role.arn
+  role = aws_iam_role.rent_payment_reminder_lambda_role.arn
 }
 
-data "archive_file" "electricity_bill_reminder_archive" {
+data "archive_file" "rent_payment_reminder_archive" {
   type        = "zip"
-  source_dir  = "${path.module}/../ElectricityBillReminder/lambda/ToongabbieUtility.ElectricityBillReminder/bin/Release/net8.0/linux-x64/publish"
-  output_path = "${path.module}/../dist/electricity-bill-reminder.zip"
+  source_dir  = "${path.module}/../RentPaymentReminder/lambda/ToongabbieUtility.RentPaymentReminder/bin/Release/net8.0/linux-x64/publish"
+  output_path = "${path.module}/../dist/rent-payment-reminder.zip"
 
 }
 
-resource "aws_s3_object" "electricity_bill_reminder_artifact" {
+resource "aws_s3_object" "rent_payment_reminder_artifact" {
   bucket = aws_s3_bucket.lambda_bucket.id
-  key    = "electricity-bill-reminder.zip"
-  source = data.archive_file.electricity_bill_reminder_archive.output_path
-  etag   = filemd5(data.archive_file.electricity_bill_reminder_archive.output_path)
+  key    = "rent-payment-reminder.zip"
+  source = data.archive_file.rent_payment_reminder_archive.output_path
+  etag   = filemd5(data.archive_file.rent_payment_reminder_archive.output_path)
 }
 
-resource "aws_iam_role" "electricity_bill_reminder_lambda_role" {
-  name = "${local.stack_prefix}-ebr-lambda-role"
+resource "aws_iam_role" "rent_payment_reminder_lambda_role" {
+  name = "${local.stack_prefix}-rpr-lambda-role"
 
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
@@ -45,7 +45,7 @@ resource "aws_iam_role" "electricity_bill_reminder_lambda_role" {
   })
 }
 
-data "aws_iam_policy_document" "electricity_bill_reminder_lambda_policy_doc" {
+data "aws_iam_policy_document" "rent_payment_reminder_lambda_policy_doc" {
   statement {
     sid    = "AllowInvokingLambdas"
     effect = "Allow"
@@ -114,27 +114,27 @@ data "aws_iam_policy_document" "electricity_bill_reminder_lambda_policy_doc" {
   }
 }
 
-resource "aws_iam_role_policy" "electricity_bill_reminder_lambda_policy" {
-  name   = "${local.stack_prefix}-ebr-lambda-policy"
-  policy = data.aws_iam_policy_document.electricity_bill_reminder_lambda_policy_doc.json
-  role = aws_iam_role.electricity_bill_reminder_lambda_role.name
+resource "aws_iam_role_policy" "rent_payment_reminder_lambda_policy" {
+  name   = "${local.stack_prefix}-rpr-lambda-policy"
+  policy = data.aws_iam_policy_document.rent_payment_reminder_lambda_policy_doc.json
+  role = aws_iam_role.rent_payment_reminder_lambda_role.name
 }
 
-resource "aws_scheduler_schedule" "electricity_bill_reminder_scheduler" {
-  name       = "${local.stack_prefix}-ebr-scheduler"
-  description = "Electricity bill reminder scheduler for sending electricity bill on every Monday"
+resource "aws_scheduler_schedule" "rent_payment_reminder_scheduler" {
+  name       = "${local.stack_prefix}-rpr-scheduler"
+  description = "Rent Payment Reminder Scheduler for reminding tenants rent due."
   group_name = aws_scheduler_schedule_group.schedule_group.name
 
   flexible_time_window {
     mode = "OFF"
   }
 
-  schedule_expression = "cron(15 10 ? * MON *)"
+  schedule_expression = "cron(30 12 ? * * *)"
   schedule_expression_timezone = "Australia/Sydney"
 
   target {
-    arn      = aws_lambda_function.electricity_bill_reminder.arn
-    role_arn = aws_iam_role.electricity_bill_reminder_scheduler_role.arn
+    arn      = aws_lambda_function.rent_payment_reminder.arn
+    role_arn = aws_iam_role.rent_payment_reminder_scheduler_role.arn
     input    = jsonencode({
       "timestamp": "<aws.scheduler.scheduled-time>"
     })
@@ -144,8 +144,8 @@ resource "aws_scheduler_schedule" "electricity_bill_reminder_scheduler" {
   }
 }
 
-resource "aws_iam_role" "electricity_bill_reminder_scheduler_role" {
-  name               = "${local.stack_prefix}-ebr-scheduler-role"
+resource "aws_iam_role" "rent_payment_reminder_scheduler_role" {
+  name               = "${local.stack_prefix}-rpr-scheduler-role"
   assume_role_policy = jsonencode({
     Version   = "2012-10-17"
     Statement = [
@@ -160,9 +160,9 @@ resource "aws_iam_role" "electricity_bill_reminder_scheduler_role" {
   })
 }
 
-resource "aws_iam_role_policy" "electricity_bill_reminder_scheduler_role_policy" {
-  name   = "${local.stack_prefix}-ebr-scheduler-role-policy"
-  role   = aws_iam_role.electricity_bill_reminder_scheduler_role.id
+resource "aws_iam_role_policy" "rent_payment_reminder_scheduler_role_policy" {
+  name   = "${local.stack_prefix}-rpr-scheduler-role-policy"
+  role   = aws_iam_role.rent_payment_reminder_scheduler_role.id
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -173,7 +173,7 @@ resource "aws_iam_role_policy" "electricity_bill_reminder_scheduler_role_policy"
         ],
         "Effect" : "Allow",
         "Resource" : [
-          aws_lambda_function.electricity_bill_reminder.arn
+          aws_lambda_function.rent_payment_reminder.arn
         ]
       }
     ]

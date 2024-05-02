@@ -1,6 +1,6 @@
 using System;
 
-namespace ToongabbieUtility.ElectricityBillReminder;
+namespace ToongabbieUtility.RentPaymentReminder;
 
 public class Request
 {

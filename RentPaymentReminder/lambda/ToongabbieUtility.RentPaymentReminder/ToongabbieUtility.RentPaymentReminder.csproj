@@ -5,8 +5,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <InvariantGlobalization>true</InvariantGlobalization>
     <IsPackable>false</IsPackable>
-    <AssemblyName>ToongabbieUtility.RosterDutyReminder</AssemblyName>
-    <RootNamespace>ToongabbieUtility.RosterDutyReminder</RootNamespace>
+    <AssemblyName>RentPaymentReminder</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
@@ -35,6 +34,7 @@
     <PackageReference Include="AWSSDK.SSO" Version="3.7.300.85" />
     <PackageReference Include="AWSSDK.SSOOIDC" Version="3.7.301.80" />
     <PackageReference Include="Stackage.Aws.Lambda" Version="0.18.0" />
+    <PackageReference Include="TimeZoneConverter" Version="6.1.0" />
   </ItemGroup>
 
   <ItemGroup>

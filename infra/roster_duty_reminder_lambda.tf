@@ -122,6 +122,7 @@ resource "aws_iam_role_policy" "roster_duty_reminder_lambda_policy" {
 
 resource "aws_scheduler_schedule" "roster_duty_reminder_scheduler" {
   name       = "${local.stack_prefix}-rdr-scheduler"
+  description = "Roster duty reminder scheduler for roster switching on every Sunday night"
   group_name = aws_scheduler_schedule_group.schedule_group.name
 
   flexible_time_window {
@@ -146,6 +147,7 @@ resource "aws_scheduler_schedule" "roster_duty_reminder_scheduler" {
 
 resource "aws_scheduler_schedule" "bin_duty_reminder_scheduler" {
   name       = "${local.stack_prefix}-rdr-bin-duty-scheduler"
+  description = "Roster Duty Reminder scheduler for bin duty message on Tuesday night"
   group_name = aws_scheduler_schedule_group.schedule_group.name
 
   flexible_time_window {

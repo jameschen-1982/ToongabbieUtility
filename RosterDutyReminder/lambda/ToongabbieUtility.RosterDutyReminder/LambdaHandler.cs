@@ -13,13 +13,11 @@ using ToongabbieUtility.Domain;
 
 namespace ToongabbieUtility.RosterDutyReminder
 {
-   // TODO: Rename and implement the required behaviour
    public class LambdaHandler(IDynamoDBContext amazonDynamoDb, IAmazonSimpleNotificationService notificationService)
       : ILambdaHandler<Request>
    {
       public async Task<ILambdaResult> HandleAsync(Request request, ILambdaContext context)
       {
-
          // Read all tenants
          var allTenants = await amazonDynamoDb.ScanAsync<ToongabbieTenant>(new List<ScanCondition>())
             .GetRemainingAsync();
