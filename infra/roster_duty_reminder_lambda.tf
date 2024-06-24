@@ -4,8 +4,8 @@ resource "aws_lambda_function" "roster_duty_reminder" {
   s3_bucket = aws_s3_bucket.lambda_bucket.id
   s3_key    = aws_s3_object.roster_duty_reminder_artifact.key
 
-  runtime     = "provided.al2023"
-  handler     = "not-used-in-custom-runtime"
+  runtime     = "dotnet8"
+  handler     = "ToongabbieUtility.RosterDutyReminder::ToongabbieUtility.RosterDutyReminder.Functions_Handler_Generated::Handler"
   timeout     = 30 # seconds
   memory_size = 512
 
@@ -16,7 +16,7 @@ resource "aws_lambda_function" "roster_duty_reminder" {
 
 data "archive_file" "roster_duty_reminder_archive" {
   type        = "zip"
-  source_dir  = "${path.module}/../RosterDutyReminder/lambda/ToongabbieUtility.RosterDutyReminder/bin/Release/net8.0/linux-x64/publish"
+  source_dir  = "${path.module}/../src/ToongabbieUtility.RosterDutyReminder/bin/Release/net8.0/linux-x64/publish"
   output_path = "${path.module}/../dist/roster-duty-reminder.zip"
 
 }
