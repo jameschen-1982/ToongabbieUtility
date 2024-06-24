@@ -38,30 +38,7 @@ namespace ToongabbieUtility.RosterDutyReminder
       private async Task MoveToNextTenant(List<ToongabbieTenant> allTenants)
       {
          ToongabbieTenant currentOnDutyTenant, nextOnDutyTenant;
-
-         if (allTenants.Count > 1)
-         {
-            if (allTenants.FindIndex(x => x.IsOnRosterDuty) == allTenants.Count - 1)
-            {
-               // Last room
-               currentOnDutyTenant = allTenants.Last();
-               nextOnDutyTenant = allTenants.First();
-            }
-            else
-            {
-               currentOnDutyTenant = allTenants[allTenants.FindIndex(x => x.IsOnRosterDuty)];
-               nextOnDutyTenant = allTenants[allTenants.FindIndex(x => x.IsOnRosterDuty) + 1];
-            }
-            currentOnDutyTenant.IsOnRosterDuty = false;
-            nextOnDutyTenant.IsOnRosterDuty = true;
-            await amazonDynamoDb.SaveAsync(currentOnDutyTenant);
-            await amazonDynamoDb.SaveAsync(nextOnDutyTenant);
-         }
-         else
-         {
-            // Do nothing
-            return;
-         }
+         currentOnDutyTenant = allTenants[allTenants.FindIndex(x => x.IsOnRosterDuty)];
 
          foreach (var tenant in allTenants)
          {
@@ -88,6 +65,25 @@ namespace ToongabbieUtility.RosterDutyReminder
                   Console.WriteLine($"Error sending message: {ex}");
                }
             }
+         }
+
+         if (allTenants.Count > 1)
+         {
+            if (allTenants.FindIndex(x => x.IsOnRosterDuty) == allTenants.Count - 1)
+            {
+               // Last room
+               currentOnDutyTenant = allTenants.Last();
+               nextOnDutyTenant = allTenants.First();
+            }
+            else
+            {
+               currentOnDutyTenant = allTenants[allTenants.FindIndex(x => x.IsOnRosterDuty)];
+               nextOnDutyTenant = allTenants[allTenants.FindIndex(x => x.IsOnRosterDuty) + 1];
+            }
+            currentOnDutyTenant.IsOnRosterDuty = false;
+            nextOnDutyTenant.IsOnRosterDuty = true;
+            await amazonDynamoDb.SaveAsync(currentOnDutyTenant);
+            await amazonDynamoDb.SaveAsync(nextOnDutyTenant);
          }
       }
 

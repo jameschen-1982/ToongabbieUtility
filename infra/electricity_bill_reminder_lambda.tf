@@ -136,7 +136,6 @@ resource "aws_scheduler_schedule" "electricity_bill_reminder_scheduler" {
     arn      = aws_lambda_function.electricity_bill_reminder.arn
     role_arn = aws_iam_role.electricity_bill_reminder_scheduler_role.arn
     input    = jsonencode({
-      "timestamp": "<aws.scheduler.scheduled-time>"
     })
     retry_policy {
       maximum_retry_attempts   = 0
