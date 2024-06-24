@@ -124,8 +124,32 @@ resource "aws_iam_role_policy" "roster_duty_reminder_lambda_policy" {
   role = aws_iam_role.roster_duty_reminder_lambda_role.name
 }
 
+resource "aws_scheduler_schedule" "roster_duty_next_roster_scheduler" {
+  name       = "${local.stack_prefix}-rdr-next-roster-scheduler"
+  description = "Roster duty reminder scheduler for roster switching on every Sunday night"
+  group_name = aws_scheduler_schedule_group.schedule_group.name
+
+  flexible_time_window {
+    mode = "OFF"
+  }
+
+  schedule_expression = "cron(0 20 ? * SAT *)"
+  schedule_expression_timezone = "Australia/Sydney"
+
+  target {
+    arn      = aws_lambda_function.roster_duty_reminder.arn
+    role_arn = aws_iam_role.roster_duty_reminder_scheduler_role.arn
+    input    = jsonencode({
+      "Action": "MoveNextTenant"
+    })
+    retry_policy {
+      maximum_retry_attempts   = 0
+    }
+  }
+}
+
 resource "aws_scheduler_schedule" "roster_duty_reminder_scheduler" {
-  name       = "${local.stack_prefix}-rdr-scheduler"
+  name       = "${local.stack_prefix}-rdr-announcer-scheduler"
   description = "Roster duty reminder scheduler for roster switching on every Sunday night"
   group_name = aws_scheduler_schedule_group.schedule_group.name
 
@@ -140,7 +164,7 @@ resource "aws_scheduler_schedule" "roster_duty_reminder_scheduler" {
     arn      = aws_lambda_function.roster_duty_reminder.arn
     role_arn = aws_iam_role.roster_duty_reminder_scheduler_role.arn
     input    = jsonencode({
-      "Action": "MoveNextTenant"
+      "Action": "AnnounceDuty"
     })
     retry_policy {
       maximum_retry_attempts   = 0
