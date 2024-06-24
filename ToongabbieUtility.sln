@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToongabbieUtility.RentPayme
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToongabbieUtility.RentPaymentReminder.Tests", "RentPaymentReminder\lambda\ToongabbieUtility.RentPaymentReminder.Tests\ToongabbieUtility.RentPaymentReminder.Tests.csproj", "{5FE6FE59-36A5-41BA-BECA-4435DF727F7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToongabbieUtility.RosterDutyReminder", "src\ToongabbieUtility.RosterDutyReminder\ToongabbieUtility.RosterDutyReminder.csproj", "{DB9D1791-D8C7-45EF-9C2F-AA67E3216E7A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,6 +64,10 @@ Global
 		{5FE6FE59-36A5-41BA-BECA-4435DF727F7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5FE6FE59-36A5-41BA-BECA-4435DF727F7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FE6FE59-36A5-41BA-BECA-4435DF727F7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB9D1791-D8C7-45EF-9C2F-AA67E3216E7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB9D1791-D8C7-45EF-9C2F-AA67E3216E7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB9D1791-D8C7-45EF-9C2F-AA67E3216E7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB9D1791-D8C7-45EF-9C2F-AA67E3216E7A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{B347910E-81B8-4058-A359-7609C2F5E669} = {190876CF-5CE8-4CF9-B0E3-3F6840584CB9}

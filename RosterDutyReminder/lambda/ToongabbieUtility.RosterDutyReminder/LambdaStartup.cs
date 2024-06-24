@@ -21,15 +21,37 @@ public class LambdaStartup : ILambdaStartup
 
    public void ConfigureServices(IServiceCollection services)
    {
+      var dynamoDbConfig = _configuration.GetSection("DynamoDb");
+      var runLocalDynamoDb = dynamoDbConfig.GetValue<bool>("LocalMode");
+
       services.AddDeadlineCancellation(_configuration);
-      services.AddAWSService<IAmazonDynamoDB>();
       services.AddAWSService<IAmazonSimpleNotificationService>();
       services.AddDefaultAWSOptions(_configuration.GetAWSOptions());
+
+      #region DynamoDB setup
+      if (runLocalDynamoDb)
+      {
+         services.AddSingleton<IAmazonDynamoDB>(sp =>
+         {
+            var clientConfig = new AmazonDynamoDBConfig { ServiceURL = dynamoDbConfig.GetValue<string>("LocalServiceUrl") };
+            return new AmazonDynamoDBClient(clientConfig);
+         });
+      }
+      else
+      {
+         services.AddAWSService<IAmazonDynamoDB>();
+      }
       services.AddTransient<IDynamoDBContext, DynamoDBContext>(sp =>
       {
          var client = sp.GetService<IAmazonDynamoDB>();
-         return new(client);
+         var dynamoDbContextConfig = new DynamoDBContextConfig
+         {
+            TableNamePrefix = dynamoDbConfig.GetValue<string>("TableNamePrefix")
+         };
+         return new DynamoDBContext(client, dynamoDbContextConfig);
       });
+
+      #endregion
    }
 
    public void ConfigurePipeline(ILambdaPipelineBuilder pipelineBuilder)

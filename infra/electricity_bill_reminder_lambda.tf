@@ -99,7 +99,11 @@ data "aws_iam_policy_document" "electricity_bill_reminder_lambda_policy_doc" {
       "dynamodb:UpdateItem",
       "dynamodb:DescribeTable"
     ]
-    resources = var.dynamo_table_arns
+    resources = [
+      aws_dynamodb_table.toongabbie-tenant-table.arn,
+      aws_dynamodb_table.efergy-sensors-table.arn,
+      "arn:aws:dynamodb:ap-southeast-2:773631419510:table/test5-app-DDBTable-1M2H022KQT2KL"
+    ]
   }
 
   statement {
