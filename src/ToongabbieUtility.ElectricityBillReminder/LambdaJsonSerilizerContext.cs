@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.Serialization.SystemTextJson;
 using ToongabbieUtility.ElectricityBillReminder;
@@ -8,6 +8,7 @@ using ToongabbieUtility.ElectricityBillReminder;
 namespace ToongabbieUtility.ElectricityBillReminder;
 
 [JsonSerializable(typeof(Request))]
+[JsonSourceGenerationOptions(UseStringEnumConverter = true)]
 public partial class LambdaJsonSerializerContext : JsonSerializerContext
 {
 }

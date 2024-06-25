@@ -4,19 +4,27 @@ resource "aws_lambda_function" "electricity_bill_reminder" {
   s3_bucket = aws_s3_bucket.lambda_bucket.id
   s3_key    = aws_s3_object.electricity_bill_reminder_artifact.key
 
-  runtime     = "provided.al2023"
-  handler     = "not-used-in-custom-runtime"
+  runtime     = "dotnet8"
+  handler     = "ToongabbieUtility.ElectricityBillReminder::ToongabbieUtility.ElectricityBillReminder.Function_Handler_Generated::Handler"
   timeout     = 30 # seconds
   memory_size = 512
 
   source_code_hash = data.archive_file.electricity_bill_reminder_archive.output_base64sha256
 
   role = aws_iam_role.electricity_bill_reminder_lambda_role.arn
+
+  environment {
+    variables = {
+      "AppConfig__ApplicationId" = aws_appconfig_application.app_stack.id,
+      "AppConfig__EnvironmentId" = aws_appconfig_environment.app_stack_env.environment_id,
+      "AppConfig__ConfigProfileId" = aws_appconfig_configuration_profile.profile.configuration_profile_id
+    }
+  }
 }
 
 data "archive_file" "electricity_bill_reminder_archive" {
   type        = "zip"
-  source_dir  = "${path.module}/../ElectricityBillReminder/lambda/ToongabbieUtility.ElectricityBillReminder/bin/Release/net8.0/linux-x64/publish"
+  source_dir  = "${path.module}/../src/ToongabbieUtility.ElectricityBillReminder/bin/Release/net8.0/linux-x64/publish"
   output_path = "${path.module}/../dist/electricity-bill-reminder.zip"
 
 }
@@ -100,9 +108,9 @@ data "aws_iam_policy_document" "electricity_bill_reminder_lambda_policy_doc" {
       "dynamodb:DescribeTable"
     ]
     resources = [
-      aws_dynamodb_table.toongabbie-tenant-table.arn,
-      aws_dynamodb_table.efergy-sensors-table.arn,
-      "arn:aws:dynamodb:ap-southeast-2:773631419510:table/test5-app-DDBTable-1M2H022KQT2KL"
+      aws_dynamodb_table.toongabbie_tenant_table.arn,
+      aws_dynamodb_table.efergy_sensors_table.arn,
+      aws_dynamodb_table.daily_heater_usage_table.arn
     ]
   }
 

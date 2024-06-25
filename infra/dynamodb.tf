@@ -1,4 +1,4 @@
-resource "aws_dynamodb_table" "toongabbie-tenant-table" {
+resource "aws_dynamodb_table" "toongabbie_tenant_table" {
   name           = "${local.stack_prefix}-ToongabbieTenants"
   billing_mode   = "PROVISIONED"
   read_capacity  = 1
@@ -11,15 +11,36 @@ resource "aws_dynamodb_table" "toongabbie-tenant-table" {
   }
 }
 
-resource "aws_dynamodb_table" "efergy-sensors-table" {
+resource "aws_dynamodb_table" "efergy_sensors_table" {
   name           = "${local.stack_prefix}-EfergySensors"
   billing_mode   = "PROVISIONED"
   read_capacity  = 1
   write_capacity = 1
   hash_key       = "Sid"
 
+
   attribute {
     name = "Sid"
+    type = "S"
+  }
+  
+}
+
+resource "aws_dynamodb_table" "daily_heater_usage_table" {
+  name           = "${local.stack_prefix}-DailyHeaterUsage"
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 1
+  write_capacity = 1
+  hash_key       = "Sid"
+  range_key      = "Date"
+
+  attribute {
+    name = "Sid"
+    type = "S"
+  }
+  
+  attribute {
+    name = "Date"
     type = "S"
   }
 }

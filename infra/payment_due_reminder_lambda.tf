@@ -107,9 +107,7 @@ data "aws_iam_policy_document" "rent_payment_reminder_lambda_policy_doc" {
       "dynamodb:DescribeTable"
     ]
     resources = [
-      aws_dynamodb_table.toongabbie-tenant-table.arn,
-      aws_dynamodb_table.efergy-sensors-table.arn,
-      "arn:aws:dynamodb:ap-southeast-2:773631419510:table/test5-app-DDBTable-1M2H022KQT2KL"
+      aws_dynamodb_table.toongabbie_tenant_table.arn
     ]
   }
 

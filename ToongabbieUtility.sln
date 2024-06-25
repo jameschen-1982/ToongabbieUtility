@@ -2,10 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToongabbieUtility.Domain", "ToongabbieUtility.Domain\ToongabbieUtility.Domain.csproj", "{F7909F50-FE0C-4552-8C1D-5E63DCDB45D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToongabbieUtility.ElectricityBillReminder", "ElectricityBillReminder\lambda\ToongabbieUtility.ElectricityBillReminder\ToongabbieUtility.ElectricityBillReminder.csproj", "{37FB54AB-C114-48F7-BF98-89D249CF4309}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToongabbieUtility.ElectricityBillReminder.Tests", "ElectricityBillReminder\lambda\ToongabbieUtility.ElectricityBillReminder.Tests\ToongabbieUtility.ElectricityBillReminder.Tests.csproj", "{FD73DA97-95AD-46B8-AE52-7DD83F7C69B8}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{190876CF-5CE8-4CF9-B0E3-3F6840584CB9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToongabbieUtility.Common", "ToongabbieUtility.Common\ToongabbieUtility.Common.csproj", "{558BE0DD-A010-4F45-B064-87EC63FB99C1}"
@@ -15,6 +11,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToongabbieUtility.RosterDutyReminder", "src\ToongabbieUtility.RosterDutyReminder\ToongabbieUtility.RosterDutyReminder.csproj", "{DB9D1791-D8C7-45EF-9C2F-AA67E3216E7A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToongabbieUtility.RentPaymentReminder", "src\ToongabbieUtility.RentPaymentReminder\ToongabbieUtility.RentPaymentReminder.csproj", "{56E50F68-FC25-4A0A-BE6D-09DFB6DB02A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToongabbieUtility.ElectricityBillReminder", "src\ToongabbieUtility.ElectricityBillReminder\ToongabbieUtility.ElectricityBillReminder.csproj", "{18E2A8B6-FDFC-45F5-9B0F-29506E33045E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,14 +24,6 @@ Global
 		{F7909F50-FE0C-4552-8C1D-5E63DCDB45D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7909F50-FE0C-4552-8C1D-5E63DCDB45D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7909F50-FE0C-4552-8C1D-5E63DCDB45D5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{37FB54AB-C114-48F7-BF98-89D249CF4309}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{37FB54AB-C114-48F7-BF98-89D249CF4309}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{37FB54AB-C114-48F7-BF98-89D249CF4309}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{37FB54AB-C114-48F7-BF98-89D249CF4309}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FD73DA97-95AD-46B8-AE52-7DD83F7C69B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FD73DA97-95AD-46B8-AE52-7DD83F7C69B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FD73DA97-95AD-46B8-AE52-7DD83F7C69B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FD73DA97-95AD-46B8-AE52-7DD83F7C69B8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{558BE0DD-A010-4F45-B064-87EC63FB99C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{558BE0DD-A010-4F45-B064-87EC63FB99C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{558BE0DD-A010-4F45-B064-87EC63FB99C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -50,9 +40,12 @@ Global
 		{56E50F68-FC25-4A0A-BE6D-09DFB6DB02A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56E50F68-FC25-4A0A-BE6D-09DFB6DB02A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56E50F68-FC25-4A0A-BE6D-09DFB6DB02A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18E2A8B6-FDFC-45F5-9B0F-29506E33045E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18E2A8B6-FDFC-45F5-9B0F-29506E33045E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18E2A8B6-FDFC-45F5-9B0F-29506E33045E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18E2A8B6-FDFC-45F5-9B0F-29506E33045E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{FD73DA97-95AD-46B8-AE52-7DD83F7C69B8} = {190876CF-5CE8-4CF9-B0E3-3F6840584CB9}
 		{3186CA79-AF56-4FE9-992F-EED163EE25D2} = {190876CF-5CE8-4CF9-B0E3-3F6840584CB9}
 	EndGlobalSection
 EndGlobal

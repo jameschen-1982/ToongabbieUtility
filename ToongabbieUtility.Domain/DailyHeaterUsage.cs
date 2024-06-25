@@ -2,7 +2,7 @@ using Amazon.DynamoDBv2.DataModel;
 
 namespace ToongabbieUtility.Domain;
 
-[DynamoDBTable("test5-app-DDBTable-1M2H022KQT2KL")]
+[DynamoDBTable("DailyHeaterUsage")]
 public class DailyHeaterUsage
 {
     [DynamoDBHashKey] public string Sid { get; set; }
