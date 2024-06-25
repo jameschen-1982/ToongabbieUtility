@@ -24,13 +24,16 @@ public class Startup
     {
         var builder = new ConfigurationBuilder()
                             .SetBasePath(Directory.GetCurrentDirectory())
-                            .AddJsonFile("appsettings.json", true);
-
-        //// Add AWS Systems Manager as a potential provider for the configuration. This is 
-        //// available with the Amazon.Extensions.Configuration.SystemsManager NuGet package.
-        //builder.AddSystemsManager("/app/settings");
-
+                            .AddJsonFile("appsettings.json", false)
+                            .AddEnvironmentVariables();
         var configuration = builder.Build();
+        builder.AddAppConfig(applicationId: configuration.GetValue<string>("AppConfig:ApplicationId"),
+            environmentId: configuration.GetValue<string>("AppConfig:EnvironmentId"),
+            configProfileId: configuration.GetValue<string>("AppConfig:ConfigProfileId"),
+            optional: true,
+            reloadAfter: TimeSpan.FromSeconds(configuration.GetValue<int>("AppConfig:ReloadInSeconds")));
+        configuration = builder.Build();
+
         services.AddSingleton<IConfiguration>(configuration);
         
         services.AddLogging(loggingBuilder =>

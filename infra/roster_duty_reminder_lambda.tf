@@ -12,13 +12,20 @@ resource "aws_lambda_function" "roster_duty_reminder" {
   source_code_hash = data.archive_file.roster_duty_reminder_archive.output_base64sha256
 
   role = aws_iam_role.roster_duty_reminder_lambda_role.arn
+
+  environment {
+    variables = {
+      "AppConfig__ApplicationId" = aws_appconfig_application.app_stack.id,
+      "AppConfig__EnvironmentId" = aws_appconfig_environment.app_stack_env.environment_id,
+      "AppConfig__ConfigProfileId" = aws_appconfig_configuration_profile.profile.configuration_profile_id
+    }
+  }
 }
 
 data "archive_file" "roster_duty_reminder_archive" {
   type        = "zip"
   source_dir  = "${path.module}/../src/ToongabbieUtility.RosterDutyReminder/bin/Release/net8.0/linux-x64/publish"
   output_path = "${path.module}/../dist/roster-duty-reminder.zip"
-
 }
 
 resource "aws_s3_object" "roster_duty_reminder_artifact" {
@@ -114,6 +121,19 @@ data "aws_iam_policy_document" "roster_duty_reminder_lambda_policy_doc" {
     ]
     resources = [
       "*"
+    ]
+  }
+
+  statement {
+    sid    = "AppConfig"
+    effect = "Allow"
+    actions = [
+      "appconfig:StartConfigurationSession",
+      "appconfig:GetLatestConfiguration",
+      "appconfig:GetConfiguration"
+    ]
+    resources = [
+      "arn:aws:appconfig:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:application/${aws_appconfig_application.app_stack.id}/environment/${aws_appconfig_environment.app_stack_env.environment_id}/configuration/${aws_appconfig_configuration_profile.profile.configuration_profile_id}"
     ]
   }
 }
