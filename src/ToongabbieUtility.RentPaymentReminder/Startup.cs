@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
-namespace ToongabbieUtility.RosterDutyReminder;
+namespace ToongabbieUtility.RentPaymentReminder;
 
 [Amazon.Lambda.Annotations.LambdaStartup]
 public class Startup
@@ -20,6 +20,9 @@ public class Startup
     /// </summary>
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddSingleton(TimeProvider.System);
+        
+        #region Configuration setup
         var builder = new ConfigurationBuilder()
                             .SetBasePath(Directory.GetCurrentDirectory())
                             .AddJsonFile("appsettings.json", false)
@@ -36,13 +39,11 @@ public class Startup
         }
 
         services.AddSingleton<IConfiguration>(configuration);
+        #endregion
         
         services.AddLogging(loggingBuilder =>
             loggingBuilder.AddSerilog(new LoggerConfiguration().ReadFrom.Configuration(configuration).CreateLogger(), dispose: true));
-        
-        //// Example of using the AWSSDK.Extensions.NETCore.Setup NuGet package to add
-        //// the Amazon S3 service client to the dependency injection container.
-        //services.AddAWSService<Amazon.S3.IAmazonS3>();
+
         
         services.AddAWSService<IAmazonSimpleNotificationService>();
         services.AddDefaultAWSOptions(configuration.GetAWSOptions());

@@ -1,8 +1,6 @@
-using System;
-
 namespace ToongabbieUtility.RentPaymentReminder;
 
 public class Request
 {
-   public DateTimeOffset? Timestamp { get; set; }
+    public DateTimeOffset? Timestamp { get; set; }
 }

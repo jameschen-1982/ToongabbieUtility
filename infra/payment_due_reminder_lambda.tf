@@ -4,21 +4,28 @@ resource "aws_lambda_function" "rent_payment_reminder" {
   s3_bucket = aws_s3_bucket.lambda_bucket.id
   s3_key    = aws_s3_object.rent_payment_reminder_artifact.key
 
-  runtime     = "provided.al2023"
-  handler     = "not-used-in-custom-runtime"
+  runtime     = "dotnet8"
+  handler     = "ToongabbieUtility.RentPaymentReminder::ToongabbieUtility.RentPaymentReminder.Function_Handler_Generated::Handler"
   timeout     = 30 # seconds
   memory_size = 512
 
   source_code_hash = data.archive_file.rent_payment_reminder_archive.output_base64sha256
 
   role = aws_iam_role.rent_payment_reminder_lambda_role.arn
+
+  environment {
+    variables = {
+      "AppConfig__ApplicationId" = aws_appconfig_application.app_stack.id,
+      "AppConfig__EnvironmentId" = aws_appconfig_environment.app_stack_env.environment_id,
+      "AppConfig__ConfigProfileId" = aws_appconfig_configuration_profile.profile.configuration_profile_id
+    }
+  }
 }
 
 data "archive_file" "rent_payment_reminder_archive" {
   type        = "zip"
-  source_dir  = "${path.module}/../RentPaymentReminder/lambda/ToongabbieUtility.RentPaymentReminder/bin/Release/net8.0/linux-x64/publish"
+  source_dir  = "${path.module}/../src/ToongabbieUtility.RentPaymentReminder/bin/Release/net8.0/linux-x64/publish"
   output_path = "${path.module}/../dist/rent-payment-reminder.zip"
-
 }
 
 resource "aws_s3_object" "rent_payment_reminder_artifact" {
@@ -114,6 +121,19 @@ data "aws_iam_policy_document" "rent_payment_reminder_lambda_policy_doc" {
     ]
     resources = [
       "*"
+    ]
+  }
+
+  statement {
+    sid    = "AppConfig"
+    effect = "Allow"
+    actions = [
+      "appconfig:StartConfigurationSession",
+      "appconfig:GetLatestConfiguration",
+      "appconfig:GetConfiguration"
+    ]
+    resources = [
+      "arn:aws:appconfig:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:application/${aws_appconfig_application.app_stack.id}/environment/${aws_appconfig_environment.app_stack_env.environment_id}/configuration/${aws_appconfig_configuration_profile.profile.configuration_profile_id}"
     ]
   }
 }
