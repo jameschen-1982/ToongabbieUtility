@@ -46,6 +46,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ToongabbieUtility.Domain\ToongabbieUtility.Domain.csproj" />
+    <ProjectReference Include="..\ToongabbieUtility.Domain\ToongabbieUtility.Domain.csproj" />
   </ItemGroup>
 </Project>

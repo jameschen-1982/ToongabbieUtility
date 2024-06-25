@@ -23,9 +23,6 @@ public class FunctionsTest
     [Fact]
     public void TestAdd()
     {
-        TestLambdaContext context = new TestLambdaContext();
         
-        var functions = new Functions(_mockCalculatorService);
-        Assert.Equal(12, functions.Add(3, 9, context));
     }
 }

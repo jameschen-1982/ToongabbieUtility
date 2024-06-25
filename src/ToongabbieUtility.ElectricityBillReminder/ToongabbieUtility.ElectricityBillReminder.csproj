@@ -46,6 +46,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ToongabbieUtility.Common\ToongabbieUtility.Common.csproj" />
+    <ProjectReference Include="..\ToongabbieUtility.Common\ToongabbieUtility.Common.csproj" />
   </ItemGroup>
 </Project>

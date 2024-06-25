@@ -40,7 +40,7 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ToongabbieUtility.Domain\ToongabbieUtility.Domain.csproj" />
+    <ProjectReference Include="..\ToongabbieUtility.Domain\ToongabbieUtility.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">
