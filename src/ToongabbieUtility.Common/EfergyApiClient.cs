@@ -4,11 +4,9 @@ using System.Text.Json;
 
 namespace ToongabbieUtility.Common;
 
-public class EfergyApiClient : IEfergyApiClient
+public class EfergyApiClient(HttpClient client) : IEfergyApiClient
 {
-    private static readonly HttpClient Client = new HttpClient();
-
-    private const string ApiUrl = "http://www.energyhive.com/mobile_proxy/getHV";
+    private const string ApiUrl = "/mobile_proxy/getHV";
         
     public async Task<EfergyDataResponse?> QueryAsync(EfergyRequest request)
     {
@@ -21,11 +19,11 @@ public class EfergyApiClient : IEfergyApiClient
                   $"type={HttpUtility.UrlEncode(request.Type)}&" +
                   $"offset={request.Offset}";
             
-        var responseString = await Client.GetStringAsync(uri);
+        var responseString = await client.GetStringAsync(uri);
 
         var options = new JsonSerializerOptions
         {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
         
         if (responseString.Contains("status"))

@@ -74,7 +74,10 @@ public class Startup
             return new DynamoDBContext(client, dynamoDbContextConfig);
         });
 
-        services.AddTransient<IEfergyApiClient, EfergyApiClient>();
+        services.AddHttpClient<IEfergyApiClient, EfergyApiClient>(c =>
+        {
+            c.BaseAddress = new Uri("http://www.energyhive.com");
+        });
         services.AddTransient<IStatisticAggregator, StatisticAggregator>();
 
         #endregion
