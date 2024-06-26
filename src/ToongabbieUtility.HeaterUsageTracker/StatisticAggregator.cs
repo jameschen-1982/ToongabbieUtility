@@ -1,11 +1,9 @@
 using Amazon.DynamoDBv2.DataModel;
-using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.Lambda.Core;
 using TimeZoneConverter;
 using ToongabbieUtility.Common;
 using ToongabbieUtility.Common.Efergy;
 using ToongabbieUtility.Domain;
-using ToongabbieUtility.HeaterUsageTracker.Models;
 
 namespace ToongabbieUtility.HeaterUsageTracker;
 
@@ -78,55 +76,5 @@ public class StatisticAggregator(IEfergyApiClient efergyClient, IDynamoDBContext
         };
         await amazonDynamoDb.SaveAsync(dailyUsage);
     }
-
-
-    public async Task<Dictionary<string, IndividualReport>> PublishWeeklyDataAsync(DateTime utcNow)
-    {
-        var utcDateTimeOffset = new DateTimeOffset(utcNow.Ticks, TimeSpan.Zero);
-        var tzi = TZConvert.GetTimeZoneInfo("Australia/Sydney");
-        var sydneyNow = TimeZoneInfo.ConvertTime(utcDateTimeOffset, tzi);
-
-        var sensors = (await amazonDynamoDb.ScanAsync<EfergySensor>(new List<ScanCondition>()).GetRemainingAsync()).ToList();
-        var individualReports = new Dictionary<string, IndividualReport>();
-        
-        var dates = Enumerable.Range(-7, 7).Select(i => sydneyNow.Date.AddDays(i)).ToList();
-        foreach (var sensor in sensors)
-        {
-            var individualReport = new IndividualReport
-            {
-                Sid = sensor.Sid,
-                SidDescription = sensor.Description
-            };
-            var totalMinutes = 0;
-            var totalKwh = 0m;
-            var totalDollarAmount = 0m;
-            foreach (var date in dates)
-            {
-                var item = await amazonDynamoDb.LoadAsync<DailyHeaterUsage>(sensor.Sid, date);
-                if (item == null) continue;
-                var subtotalMinutes = item.TotalMinutes;
-                totalMinutes += subtotalMinutes;
-                var subtotalWattMinutes = item.TotalWattMinutes;
-                var subtotalKwh = subtotalWattMinutes / 60000m;
-                totalKwh += subtotalKwh;
-                var subtotalDollarAmount = subtotalKwh * 0.3m;
-                totalDollarAmount += subtotalDollarAmount;
-
-                var missingMinutes = item.MissingMinutes;
-
-                individualReport.BreakdownDescription.Add(
-                    $"{date:dddd, dd MMMM}: {subtotalMinutes} minutes, {subtotalKwh:0.0} Kwh, {subtotalDollarAmount:C}, missing {missingMinutes} minutes");
-            }
-
-            var totalHours = totalMinutes / 60;
-            var remainingMinutes = totalMinutes % 60;
-
-            var totalTime = totalHours > 0 ? $"{totalHours} hours {remainingMinutes} mins" : $"{totalMinutes} mins";
-
-            individualReport.Summary = $"Total: {totalTime}, {totalKwh:0.0} Kwh, {totalDollarAmount:C}";
-            individualReports.Add(sensor.Sid, individualReport);
-        }
-
-        return individualReports;
-    }
+    
 }

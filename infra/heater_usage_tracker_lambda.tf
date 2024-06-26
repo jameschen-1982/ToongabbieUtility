@@ -1,17 +1,17 @@
-resource "aws_lambda_function" "electricity_bill_reminder" {
-  function_name = "${local.stack_prefix}-electricity-bill-reminder"
+resource "aws_lambda_function" "heater_usage_tracker" {
+  function_name = "${local.stack_prefix}-heater-usage-tracker"
 
   s3_bucket = aws_s3_bucket.lambda_bucket.id
-  s3_key    = aws_s3_object.electricity_bill_reminder_artifact.key
+  s3_key    = aws_s3_object.heater_usage_tracker_artifact.key
 
   runtime     = "dotnet8"
   handler     = "ToongabbieUtility.ElectricityBillReminder::ToongabbieUtility.ElectricityBillReminder.Function_Handler_Generated::Handler"
   timeout     = 30 # seconds
   memory_size = 512
 
-  source_code_hash = data.archive_file.electricity_bill_reminder_archive.output_base64sha256
+  source_code_hash = data.archive_file.heater_usage_tracker_archive.output_base64sha256
 
-  role = aws_iam_role.electricity_bill_reminder_lambda_role.arn
+  role = aws_iam_role.heater_usage_tracker_lambda_role.arn
 
   environment {
     variables = {
@@ -23,22 +23,22 @@ resource "aws_lambda_function" "electricity_bill_reminder" {
   }
 }
 
-data "archive_file" "electricity_bill_reminder_archive" {
+data "archive_file" "heater_usage_tracker_archive" {
   type        = "zip"
-  source_dir  = "${path.module}/../src/ToongabbieUtility.ElectricityBillReminder/bin/Release/net8.0/linux-x64/publish"
-  output_path = "${path.module}/../dist/electricity-bill-reminder.zip"
+  source_dir  = "${path.module}/../src/ToongabbieUtility.HeaterUsageTracker/bin/Release/net8.0/linux-x64/publish"
+  output_path = "${path.module}/../dist/heater-usage-tracker.zip"
 
 }
 
-resource "aws_s3_object" "electricity_bill_reminder_artifact" {
+resource "aws_s3_object" "heater_usage_tracker_artifact" {
   bucket = aws_s3_bucket.lambda_bucket.id
-  key    = "electricity-bill-reminder.zip"
-  source = data.archive_file.electricity_bill_reminder_archive.output_path
-  etag   = filemd5(data.archive_file.electricity_bill_reminder_archive.output_path)
+  key    = "heater-usage-tracker.zip"
+  source = data.archive_file.heater_usage_tracker_archive.output_path
+  etag   = filemd5(data.archive_file.heater_usage_tracker_archive.output_path)
 }
 
-resource "aws_iam_role" "electricity_bill_reminder_lambda_role" {
-  name = "${local.stack_prefix}-ebr-lambda-role"
+resource "aws_iam_role" "heater_usage_tracker_lambda_role" {
+  name = "${local.stack_prefix}-hut-lambda-role"
 
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
@@ -54,7 +54,7 @@ resource "aws_iam_role" "electricity_bill_reminder_lambda_role" {
   })
 }
 
-data "aws_iam_policy_document" "electricity_bill_reminder_lambda_policy_doc" {
+data "aws_iam_policy_document" "heater_usage_tracker_lambda_policy_doc" {
   statement {
     sid    = "AllowInvokingLambdas"
     effect = "Allow"
@@ -109,32 +109,19 @@ data "aws_iam_policy_document" "electricity_bill_reminder_lambda_policy_doc" {
       "dynamodb:DescribeTable"
     ]
     resources = [
-      aws_dynamodb_table.toongabbie_tenant_table.arn,
-      aws_dynamodb_table.efergy_sensors_table.arn,
       aws_dynamodb_table.daily_heater_usage_table.arn
     ]
   }
-
-  statement {
-    sid    = "SNS"
-    effect = "Allow"
-    actions = [
-      "sns:Publish",
-    ]
-    resources = [
-      "*"
-    ]
-  }
 }
 
-resource "aws_iam_role_policy" "electricity_bill_reminder_lambda_policy" {
-  name   = "${local.stack_prefix}-ebr-lambda-policy"
-  policy = data.aws_iam_policy_document.electricity_bill_reminder_lambda_policy_doc.json
-  role = aws_iam_role.electricity_bill_reminder_lambda_role.name
+resource "aws_iam_role_policy" "heater_usage_tracker_lambda_policy" {
+  name   = "${local.stack_prefix}-hut-lambda-policy"
+  policy = data.aws_iam_policy_document.heater_usage_tracker_lambda_policy_doc.json
+  role = aws_iam_role.heater_usage_tracker_lambda_role.name
 }
 
-resource "aws_scheduler_schedule" "electricity_bill_reminder_scheduler" {
-  name       = "${local.stack_prefix}-ebr-scheduler"
+resource "aws_scheduler_schedule" "heater_usage_tracker_scheduler" {
+  name       = "${local.stack_prefix}-hut-scheduler"
   description = "Electricity bill reminder scheduler for sending electricity bill on every Monday"
   group_name = aws_scheduler_schedule_group.schedule_group.name
 
@@ -142,22 +129,22 @@ resource "aws_scheduler_schedule" "electricity_bill_reminder_scheduler" {
     mode = "OFF"
   }
 
-  schedule_expression = "cron(15 10 ? * MON *)"
+  schedule_expression = "cron(30 09 ? * MON *)"
   schedule_expression_timezone = "Australia/Sydney"
 
   target {
-    arn      = aws_lambda_function.electricity_bill_reminder.arn
-    role_arn = aws_iam_role.electricity_bill_reminder_scheduler_role.arn
+    arn      = aws_lambda_function.heater_usage_tracker.arn
+    role_arn = aws_iam_role.heater_usage_tracker_scheduler_role.arn
     input    = jsonencode({
     })
     retry_policy {
-      maximum_retry_attempts   = 0
+      maximum_retry_attempts   = 10
     }
   }
 }
 
-resource "aws_iam_role" "electricity_bill_reminder_scheduler_role" {
-  name               = "${local.stack_prefix}-ebr-scheduler-role"
+resource "aws_iam_role" "heater_usage_tracker_scheduler_role" {
+  name               = "${local.stack_prefix}-hut-scheduler-role"
   assume_role_policy = jsonencode({
     Version   = "2012-10-17"
     Statement = [
@@ -172,9 +159,9 @@ resource "aws_iam_role" "electricity_bill_reminder_scheduler_role" {
   })
 }
 
-resource "aws_iam_role_policy" "electricity_bill_reminder_scheduler_role_policy" {
-  name   = "${local.stack_prefix}-ebr-scheduler-role-policy"
-  role   = aws_iam_role.electricity_bill_reminder_scheduler_role.id
+resource "aws_iam_role_policy" "heater_usage_tracker_scheduler_role_policy" {
+  name   = "${local.stack_prefix}-hut-scheduler-role-policy"
+  role   = aws_iam_role.heater_usage_tracker_scheduler_role.id
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -185,7 +172,7 @@ resource "aws_iam_role_policy" "electricity_bill_reminder_scheduler_role_policy"
         ],
         "Effect" : "Allow",
         "Resource" : [
-          aws_lambda_function.electricity_bill_reminder.arn
+          aws_lambda_function.heater_usage_tracker.arn
         ]
       }
     ]

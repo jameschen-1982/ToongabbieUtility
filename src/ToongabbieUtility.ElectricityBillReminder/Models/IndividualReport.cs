@@ -1,4 +1,4 @@
-namespace ToongabbieUtility.HeaterUsageTracker.Models;
+namespace ToongabbieUtility.ElectricityBillReminder.Models;
 
 public class IndividualReport
 {
@@ -6,7 +6,7 @@ public class IndividualReport
         
     public string SidDescription { get; set; }
         
-    public List<string> BreakdownDescription { get; set; } = new List<string>();
+    public List<string> BreakdownDescription { get; set; } = new();
         
     public string Summary { get; set; }
 }
