@@ -1,5 +1,6 @@
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.Lambda.Core;
+using Microsoft.Extensions.Configuration;
 using TimeZoneConverter;
 using ToongabbieUtility.Common;
 using ToongabbieUtility.Common.Efergy;
@@ -7,17 +8,21 @@ using ToongabbieUtility.Domain;
 
 namespace ToongabbieUtility.HeaterUsageTracker;
 
-public class StatisticAggregator(IEfergyApiClient efergyClient, IDynamoDBContext amazonDynamoDb) : IStatisticAggregator
+public class StatisticAggregator(IEfergyApiClient efergyClient, IDynamoDBContext amazonDynamoDb, IConfiguration configuration) : IStatisticAggregator
 {
+    private readonly int _heaterThreshold = configuration.GetValue<int>("HeaterThreshold");
+    private readonly string _efergyToken = configuration.GetValue<string>("EfergyToken")!;
+    
     public async Task PullDailyDataAsync(DateTime utcNow, ILambdaContext context)
     {
+
         // Get time for Sydney Yesterday
         var sydneyYesterday = GetTimeRange(utcNow, out var fromTime, out var toTime);
 
         // pull the data from Efergy
         var request = new EfergyRequest
         {
-            Token = "aXiVyAkDxqe-PFV1ZN4gfxRsLtS7c3wk",
+            Token = _efergyToken,
             Period = "custom",
             FromTime = fromTime,
             ToTime = toTime,
@@ -38,7 +43,7 @@ public class StatisticAggregator(IEfergyApiClient efergyClient, IDynamoDBContext
                     return false;
                 }
 
-                return power >= 800;
+                return power >= _heaterThreshold;
             }).ToList();
             var totalMinutes = heaterUsageData.Count();
             var totalWattMinutes = heaterUsageData.Sum(d => decimal.Parse(d.First().Value));
