@@ -5,7 +5,7 @@ resource "aws_lambda_function" "heater_usage_tracker" {
   s3_key    = aws_s3_object.heater_usage_tracker_artifact.key
 
   runtime     = "dotnet8"
-  handler     = "ToongabbieUtility.ElectricityBillReminder::ToongabbieUtility.ElectricityBillReminder.Function_Handler_Generated::Handler"
+  handler     = "ToongabbieUtility.HeaterUsageTracker::ToongabbieUtility.HeaterUsageTracker.Function_Handler_Generated::Handler"
   timeout     = 30 # seconds
   memory_size = 512
 
