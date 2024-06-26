@@ -1,3 +1,4 @@
+using System.Reflection;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.SimpleNotificationService;
@@ -27,7 +28,9 @@ public class Startup
         var builder = new ConfigurationBuilder()
                             .SetBasePath(Directory.GetCurrentDirectory())
                             .AddJsonFile("appsettings.json", false)
-                            .AddEnvironmentVariables();
+                            .AddEnvironmentVariables()
+                            .AddUserSecrets(Assembly.GetExecutingAssembly(), optional: true)
+            ;
         var configuration = builder.Build();
         if (!string.IsNullOrEmpty(configuration.GetValue<string>("AppConfig:ApplicationId")))
         {
