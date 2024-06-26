@@ -23,43 +23,47 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddSingleton(TimeProvider.System);
-        
+
         #region Configuration setup
+
         var builder = new ConfigurationBuilder()
-                            .SetBasePath(Directory.GetCurrentDirectory())
-                            .AddJsonFile("appsettings.json", false)
-                            .AddEnvironmentVariables()
-                            .AddUserSecrets(Assembly.GetExecutingAssembly(), optional: true)
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", false)
+                .AddEnvironmentVariables()
+                .AddUserSecrets(Assembly.GetExecutingAssembly(), optional: true)
             ;
         var configuration = builder.Build();
-        if (!string.IsNullOrEmpty(configuration.GetValue<string>("AppConfig:ApplicationId")))
-        {
+#if !DEBUG
             builder.AddAppConfig(applicationId: configuration.GetValue<string>("AppConfig:ApplicationId"),
                 environmentId: configuration.GetValue<string>("AppConfig:EnvironmentId"),
                 configProfileId: configuration.GetValue<string>("AppConfig:ConfigProfileId"),
                 optional: true,
                 reloadAfter: TimeSpan.FromSeconds(configuration.GetValue<int>("AppConfig:ReloadInSeconds")));
             configuration = builder.Build();
-        }
+#endif
 
         services.AddSingleton<IConfiguration>(configuration);
-        #endregion
-        
-        services.AddLogging(loggingBuilder =>
-            loggingBuilder.AddSerilog(new LoggerConfiguration().ReadFrom.Configuration(configuration).CreateLogger(), dispose: true));
 
-        
+        #endregion
+
+        services.AddLogging(loggingBuilder =>
+            loggingBuilder.AddSerilog(new LoggerConfiguration().ReadFrom.Configuration(configuration).CreateLogger(),
+                dispose: true));
+
+
         services.AddAWSService<IAmazonSimpleNotificationService>();
         services.AddDefaultAWSOptions(configuration.GetAWSOptions());
 
         #region DynamoDB setup
+
         var dynamoDbConfig = configuration.GetSection("DynamoDb");
         var runLocalDynamoDb = dynamoDbConfig.GetValue<bool>("LocalMode");
         if (runLocalDynamoDb)
         {
             services.AddSingleton<IAmazonDynamoDB>(sp =>
             {
-                var clientConfig = new AmazonDynamoDBConfig { ServiceURL = dynamoDbConfig.GetValue<string>("LocalServiceUrl") };
+                var clientConfig = new AmazonDynamoDBConfig
+                    { ServiceURL = dynamoDbConfig.GetValue<string>("LocalServiceUrl") };
                 return new AmazonDynamoDBClient(clientConfig);
             });
         }
@@ -67,6 +71,7 @@ public class Startup
         {
             services.AddAWSService<IAmazonDynamoDB>();
         }
+
         services.AddTransient<IDynamoDBContext, DynamoDBContext>(sp =>
         {
             var client = sp.GetService<IAmazonDynamoDB>();
