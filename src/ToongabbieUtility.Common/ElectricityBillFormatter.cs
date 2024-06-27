@@ -35,13 +35,19 @@ public static class ElectricityBillFormatter
                 $"{dailyUsage.Date:dddd, dd MMMM}: {subtotalTimeSpan:h'h 'mm'm'}, {subtotalKwh:0.0}Kwh, {subtotalDollarAmount:C}");
         }
 
-        var totalMinutes = dailyUsages.Sum(d => d.TotalMinutes);
-        var totalTimeSpan = TimeSpan.FromMinutes(totalMinutes);
+        var totalTimeSpan = GetTotalTimeSpan(dailyUsages);
         var totalKwh = GetTotalKwh(dailyUsages);
         var totalAmount = GetTotalAmount(dailyUsages, unitPrice);
 
         sb.Append($"Total: {totalTimeSpan:h'h 'mm'm'}, {totalKwh:0.0}Kwh, {totalAmount:C}");
         
         return sb.ToString();
+    }
+
+    public static TimeSpan GetTotalTimeSpan(List<DailyHeaterUsage> dailyUsages)
+    {
+        var totalMinutes = dailyUsages.Sum(d => d.TotalMinutes);
+        var totalTimeSpan = TimeSpan.FromMinutes(totalMinutes);
+        return totalTimeSpan;
     }
 }

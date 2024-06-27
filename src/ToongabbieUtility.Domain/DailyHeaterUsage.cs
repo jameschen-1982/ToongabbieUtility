@@ -7,7 +7,7 @@ public class DailyHeaterUsage
 {
     [DynamoDBHashKey] public string Sid { get; set; }
 
-    [DynamoDBRangeKey] public DateTime Date { get; set; }
+    [DynamoDBRangeKey] public string Date { get; set; }
     
     [DynamoDBProperty] public int TotalMinutes { get; set; }
 

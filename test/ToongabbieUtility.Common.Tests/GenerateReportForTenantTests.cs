@@ -18,13 +18,13 @@ public class Tests
         {
             new()
             {
-                Date = new DateTime(2024, 04, 29),
+                Date = "2024-04-29",
                 TotalMinutes = 30,
                 TotalWattMinutes = 10000
             },
             new()
             {
-                Date = new DateTime(2024, 04, 30),
+                Date = "2024-04-30",
                 TotalMinutes = 61,
                 TotalWattMinutes = 60000
             }

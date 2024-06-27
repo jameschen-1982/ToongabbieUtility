@@ -35,11 +35,53 @@ public class Function(
         var allTenants = await amazonDynamoDb.ScanAsync<ToongabbieTenant>(new List<ScanCondition>())
             .GetRemainingAsync();
         var billedTenants = allTenants.Where(t => !string.IsNullOrEmpty(t.Sid)).ToList();
+        var sensors = await amazonDynamoDb.ScanAsync<EfergySensor>(new List<ScanCondition>()).GetRemainingAsync();
 
-        var sensors = (await amazonDynamoDb.ScanAsync<EfergySensor>(new List<ScanCondition>()).GetRemainingAsync())
-            .Where(s => billedTenants.Any(t => t.Sid == s.Sid)).ToList();
+        await SaveWeeklyReport(sensors, mondayBeforeLastSunday, lastSunday);
+        
+        await SendSms(sensors, billedTenants, mondayBeforeLastSunday, lastSunday);
+        
+        await SendSns();
+    }
 
+    private async Task SaveWeeklyReport(List<EfergySensor> sensors, DateTime mondayBeforeLastSunday, DateTime lastSunday)
+    {
         var keyValuePairs = await Task.WhenAll(sensors.Select(async s =>
+            new KeyValuePair<string, List<DailyHeaterUsage>>(s.Sid,
+                await amazonDynamoDb
+                    .QueryAsync<DailyHeaterUsage>(s.Sid, QueryOperator.Between,
+                        [mondayBeforeLastSunday.ToString("yyyy-MM-dd"), lastSunday.AddHours(24).ToString("yyyy-MM-dd")]).GetRemainingAsync())));
+
+        var heaterUsageBySensor = keyValuePairs
+            .ToDictionary(x => x.Key, x =>
+                new { Sensor = sensors.First(s => s.Sid == x.Key), Usages = x.Value });
+
+        foreach (var sensor in sensors)
+        {
+            heaterUsageBySensor.TryGetValue(sensor.Sid, out var sidHeaterUsage);
+            TimeSpan? totalTimespan = sidHeaterUsage != null ? ElectricityBillFormatter.GetTotalTimeSpan(sidHeaterUsage.Usages) : null;
+            decimal? totalWattHours = sidHeaterUsage != null ? ElectricityBillFormatter.GetTotalKwh(sidHeaterUsage.Usages) : null;
+            decimal? amount = sidHeaterUsage != null ? ElectricityBillFormatter.GetTotalAmount(sidHeaterUsage.Usages, _electricityUnitPrice) : null;
+            
+            var report = new WeeklyHeaterUsage
+            {
+                Sid = sensor.Sid,
+                StartDate = mondayBeforeLastSunday.ToString("yyyy-MM-dd"),
+                EndDate = lastSunday.ToString("yyyy-MM-dd"),
+                TotalHours = totalTimespan != null ? Convert.ToDecimal(Math.Round(totalTimespan.Value.TotalHours, 1)) : null,
+                TotalWattHours = totalWattHours != null ? Math.Round(totalWattHours.Value, 1) : null,
+                TotalAmount = amount != null ? Math.Round(amount.Value, 2) : null
+            };
+
+            await amazonDynamoDb.SaveAsync(report);
+        }
+    }
+
+    private async Task SendSms(List<EfergySensor> sensors, List<ToongabbieTenant> billedTenants, DateTime mondayBeforeLastSunday, DateTime lastSunday)
+    {
+        var billedSensors = sensors.Where(s => billedTenants.Any(t => t.Sid == s.Sid)).ToList();
+
+        var keyValuePairs = await Task.WhenAll(billedSensors.Select(async s =>
             new KeyValuePair<string, List<DailyHeaterUsage>>(s.Sid,
                 await amazonDynamoDb
                     .QueryAsync<DailyHeaterUsage>(s.Sid, QueryOperator.Between,
@@ -47,7 +89,7 @@ public class Function(
 
         var heaterUsageBySensor = keyValuePairs
             .ToDictionary(x => x.Key, x =>
-                new { Sensor = sensors.First(s => s.Sid == x.Key), Usages = x.Value });
+                new { Sensor = billedSensors.First(s => s.Sid == x.Key), Usages = x.Value });
 
         foreach (var billedTenant in billedTenants)
         {
@@ -90,12 +132,6 @@ public class Function(
                 logger.LogError(ex, "Error sending message");
             }
         }
-
-        var reports = await PublishWeeklyDataAsync(DateTime.UtcNow);
-
-        logger.LogInformation("{@Reports}", reports);
-
-        await SendSNS(reports, context);
     }
 
     public async Task<Dictionary<string, IndividualReport>> PublishWeeklyDataAsync(DateTime utcNow)
@@ -150,8 +186,12 @@ public class Function(
     }
     
     
-    private async Task SendSNS(Dictionary<string, IndividualReport> reports, ILambdaContext context)
+    private async Task SendSns()
     {
+        var reports = await PublishWeeklyDataAsync(DateTime.UtcNow);
+
+        logger.LogInformation("{@Reports}", reports);
+
         var sb = new StringBuilder();
         foreach (var kv in reports)
         {

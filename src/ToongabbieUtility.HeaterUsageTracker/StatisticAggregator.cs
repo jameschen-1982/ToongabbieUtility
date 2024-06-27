@@ -72,7 +72,7 @@ public class StatisticAggregator(IEfergyApiClient efergyClient, IDynamoDBContext
     {
         var dailyUsage = new DailyHeaterUsage
         {
-            Date = date,
+            Date = date.ToString("yyyy-MM-dd"),
             Sid = sid,
             TotalMinutes = totalMinutes,
             TotalWattMinutes = Convert.ToInt32(totalWattMinutes),
