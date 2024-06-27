@@ -10,6 +10,10 @@ public class EfergyApiClient(HttpClient client) : IEfergyApiClient
         
     public async Task<EfergyDataResponse?> QueryAsync(EfergyRequest request)
     {
+        if (string.IsNullOrEmpty(request.Token))
+        {
+            throw new EfergyApiException("Empty token");
+        }
         var uri = $"{ApiUrl}?token={HttpUtility.UrlEncode(request.Token)}&" +
                   $"period={HttpUtility.UrlEncode(request.Period)}&" +
                   $"fromTime={request.FromTime}&" +

@@ -112,6 +112,19 @@ data "aws_iam_policy_document" "heater_usage_tracker_lambda_policy_doc" {
       aws_dynamodb_table.daily_heater_usage_table.arn
     ]
   }
+  
+  statement {
+    sid    = "AppConfig"
+    effect = "Allow"
+    actions = [
+      "appconfig:StartConfigurationSession",
+      "appconfig:GetLatestConfiguration",
+      "appconfig:GetConfiguration"
+    ]
+    resources = [
+      "arn:aws:appconfig:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:application/${aws_appconfig_application.app_stack.id}/environment/${aws_appconfig_environment.app_stack_env.environment_id}/configuration/${aws_appconfig_configuration_profile.profile.configuration_profile_id}"
+    ]
+  }
 }
 
 resource "aws_iam_role_policy" "heater_usage_tracker_lambda_policy" {
