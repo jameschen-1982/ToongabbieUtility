@@ -1,6 +1,6 @@
 resource "aws_appconfig_application" "app_stack" {
   name        = "${local.stack_prefix}-application-stack-config"
-  description = "AppConfig for all applications in an environment"
+  description = "AppConfig for all Toongabbie Utility applications in an environment"
 }
 
 resource "aws_appconfig_environment" "app_stack_env" {
