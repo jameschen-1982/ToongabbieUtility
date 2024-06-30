@@ -10,14 +10,12 @@ namespace ToongabbieUtility.HeaterUsageTracker;
 public class Function(
     IStatisticAggregator statisticAggregator,
     ILogger<Function> logger,
-    IAmazonSimpleNotificationService notificationService)
+    IAmazonSimpleNotificationService notificationService,
+    TimeProvider timeProvider)
 {
     [LambdaFunction]
     public async Task Handler(Request request, ILambdaContext context)
     {
-        for (int i = 7; i >= 0; i--)
-        {
-            await statisticAggregator.PullDailyDataAsync(DateTime.UtcNow.AddDays(-i), context);
-        }
+        await statisticAggregator.PullDailyDataAsync(timeProvider.GetUtcNow().UtcDateTime, context);
     }
 }

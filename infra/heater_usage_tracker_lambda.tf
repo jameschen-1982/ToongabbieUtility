@@ -142,7 +142,7 @@ resource "aws_scheduler_schedule" "heater_usage_tracker_scheduler" {
     mode = "OFF"
   }
 
-  schedule_expression = "cron(30 09 ? * MON *)"
+  schedule_expression = "cron(05 10 ? * * *)"
   schedule_expression_timezone = "Australia/Sydney"
 
   target {
