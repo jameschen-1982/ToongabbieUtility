@@ -85,7 +85,8 @@ public class Function(
             new KeyValuePair<string, List<DailyHeaterUsage>>(s.Sid,
                 await amazonDynamoDb
                     .QueryAsync<DailyHeaterUsage>(s.Sid, QueryOperator.Between,
-                        [mondayBeforeLastSunday, lastSunday.AddHours(24)]).GetRemainingAsync())));
+                        [mondayBeforeLastSunday.ToString("yyyy-MM-dd"), lastSunday.AddHours(24).ToString("yyyy-MM-dd")])
+                    .GetRemainingAsync())));
 
         var heaterUsageBySensor = keyValuePairs
             .ToDictionary(x => x.Key, x =>
@@ -120,6 +121,8 @@ public class Function(
                 logger.LogInformation("Sending: {Message} to {PhoneNumber}", snsRequest.Message,
                     billedTenant.PhoneNumber);
                 var enabledSms = configuration.GetValue<bool>("EnableSMS");
+                logger.LogInformation("Enable SMS {Flag}", enabledSms);
+
                 if (enabledSms)
                 {
                     var response = await notificationService.PublishAsync(snsRequest);
@@ -157,8 +160,15 @@ public class Function(
             var totalDollarAmount = 0m;
             foreach (var date in dates)
             {
-                var item = await amazonDynamoDb.LoadAsync<DailyHeaterUsage>(sensor.Sid, date);
-                if (item == null) continue;
+                var item = await amazonDynamoDb.LoadAsync<DailyHeaterUsage>(sensor.Sid, date.ToString("yyyy-MM-dd"));
+                if (item == null)
+                {
+                    item = await amazonDynamoDb.LoadAsync<DailyHeaterUsage>(sensor.Sid, date.ToString("yyyy-MM-ddT00:00:00.000Z"));
+                    if (item == null)
+                    {
+                        continue;              
+                    }
+                }
                 var subtotalMinutes = item.TotalMinutes;
                 totalMinutes += subtotalMinutes;
                 var subtotalWattMinutes = item.TotalWattMinutes;

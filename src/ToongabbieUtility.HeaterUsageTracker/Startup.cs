@@ -39,7 +39,7 @@ public class Startup
             builder.AddAppConfig(applicationId: configuration.GetValue<string>("AppConfig:ApplicationId"),
                 environmentId: configuration.GetValue<string>("AppConfig:EnvironmentId"),
                 configProfileId: configuration.GetValue<string>("AppConfig:ConfigProfileId"),
-                optional: true,
+                optional: false,
                 reloadAfter: TimeSpan.FromSeconds(configuration.GetValue<int>("AppConfig:ReloadInSeconds")));
             configuration = builder.Build();
         }

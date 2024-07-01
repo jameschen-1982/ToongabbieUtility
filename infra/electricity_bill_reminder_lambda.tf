@@ -18,7 +18,8 @@ resource "aws_lambda_function" "electricity_bill_reminder" {
       "AppConfig__ApplicationId" = aws_appconfig_application.app_stack.id,
       "AppConfig__EnvironmentId" = aws_appconfig_environment.app_stack_env.environment_id,
       "AppConfig__ConfigProfileId" = aws_appconfig_configuration_profile.profile.configuration_profile_id
-      "HeaterBillTopicArn": var.heater_bill_sns_topic_arn
+      "HeaterBillTopicArn": var.heater_bill_sns_topic_arn,
+      "DynamoDb__TableNamePrefix": "${local.stack_prefix}-"
     }
   }
 }
@@ -111,7 +112,8 @@ data "aws_iam_policy_document" "electricity_bill_reminder_lambda_policy_doc" {
     resources = [
       aws_dynamodb_table.toongabbie_tenant_table.arn,
       aws_dynamodb_table.efergy_sensors_table.arn,
-      aws_dynamodb_table.daily_heater_usage_table.arn
+      aws_dynamodb_table.daily_heater_usage_table.arn,
+      aws_dynamodb_table.weekly_heater_usage_table.arn
     ]
   }
 
@@ -123,6 +125,19 @@ data "aws_iam_policy_document" "electricity_bill_reminder_lambda_policy_doc" {
     ]
     resources = [
       "*"
+    ]
+  }
+
+  statement {
+    sid    = "AppConfig"
+    effect = "Allow"
+    actions = [
+      "appconfig:StartConfigurationSession",
+      "appconfig:GetLatestConfiguration",
+      "appconfig:GetConfiguration"
+    ]
+    resources = [
+      "arn:aws:appconfig:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:application/${aws_appconfig_application.app_stack.id}/environment/${aws_appconfig_environment.app_stack_env.environment_id}/configuration/${aws_appconfig_configuration_profile.profile.configuration_profile_id}"
     ]
   }
 }

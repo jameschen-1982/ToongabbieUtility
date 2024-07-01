@@ -25,14 +25,16 @@ public class Startup
                             .AddJsonFile("appsettings.json", false)
                             .AddEnvironmentVariables();
         var configuration = builder.Build();
-#if !DEBUG
+
+        if (!string.IsNullOrEmpty(configuration.GetValue<string>("AppConfig:ApplicationId")))
+        {
             builder.AddAppConfig(applicationId: configuration.GetValue<string>("AppConfig:ApplicationId"),
                 environmentId: configuration.GetValue<string>("AppConfig:EnvironmentId"),
                 configProfileId: configuration.GetValue<string>("AppConfig:ConfigProfileId"),
-                optional: true,
+                optional: false,
                 reloadAfter: TimeSpan.FromSeconds(configuration.GetValue<int>("AppConfig:ReloadInSeconds")));
             configuration = builder.Build();
-#endif
+        }
 
         services.AddSingleton<IConfiguration>(configuration);
         

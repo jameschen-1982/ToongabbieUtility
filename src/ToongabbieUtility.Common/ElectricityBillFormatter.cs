@@ -39,7 +39,7 @@ public static class ElectricityBillFormatter
         var totalKwh = GetTotalKwh(dailyUsages);
         var totalAmount = GetTotalAmount(dailyUsages, unitPrice);
 
-        sb.Append($"Total: {totalTimeSpan:h'h 'mm'm'}, {totalKwh:0.0}Kwh, {totalAmount:C}");
+        sb.Append($"Total: {totalTimeSpan.TotalHours:0.0}hrs, {totalKwh:0.0}Kwh, {totalAmount:C}");
         
         return sb.ToString();
     }

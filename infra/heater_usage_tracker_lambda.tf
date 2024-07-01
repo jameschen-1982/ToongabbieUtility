@@ -18,7 +18,8 @@ resource "aws_lambda_function" "heater_usage_tracker" {
       "AppConfig__ApplicationId" = aws_appconfig_application.app_stack.id,
       "AppConfig__EnvironmentId" = aws_appconfig_environment.app_stack_env.environment_id,
       "AppConfig__ConfigProfileId" = aws_appconfig_configuration_profile.profile.configuration_profile_id
-      "HeaterBillTopicArn": var.heater_bill_sns_topic_arn
+      "HeaterBillTopicArn": var.heater_bill_sns_topic_arn,
+      "DynamoDb__TableNamePrefix": "${local.stack_prefix}-"
     }
   }
 }

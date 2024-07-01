@@ -17,7 +17,8 @@ resource "aws_lambda_function" "roster_duty_reminder" {
     variables = {
       "AppConfig__ApplicationId" = aws_appconfig_application.app_stack.id,
       "AppConfig__EnvironmentId" = aws_appconfig_environment.app_stack_env.environment_id,
-      "AppConfig__ConfigProfileId" = aws_appconfig_configuration_profile.profile.configuration_profile_id
+      "AppConfig__ConfigProfileId" = aws_appconfig_configuration_profile.profile.configuration_profile_id,
+      "DynamoDb__TableNamePrefix": "${local.stack_prefix}-"
     }
   }
 }
