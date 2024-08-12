@@ -18,7 +18,7 @@ resource "aws_lambda_function" "electricity_bill_reminder" {
       "AppConfig__ApplicationId" = aws_appconfig_application.app_stack.id,
       "AppConfig__EnvironmentId" = aws_appconfig_environment.app_stack_env.environment_id,
       "AppConfig__ConfigProfileId" = aws_appconfig_configuration_profile.profile.configuration_profile_id
-      "HeaterBillTopicArn": var.heater_bill_sns_topic_arn,
+      "HeaterBillTopicArn": aws_sns_topic.my_notification.arn,
       "DynamoDb__TableNamePrefix": "${local.stack_prefix}-"
     }
   }
@@ -164,6 +164,7 @@ resource "aws_scheduler_schedule" "electricity_bill_reminder_scheduler" {
     arn      = aws_lambda_function.electricity_bill_reminder.arn
     role_arn = aws_iam_role.electricity_bill_reminder_scheduler_role.arn
     input    = jsonencode({
+      "Action": "All"
     })
     retry_policy {
       maximum_retry_attempts   = 0
@@ -205,4 +206,8 @@ resource "aws_iam_role_policy" "electricity_bill_reminder_scheduler_role_policy"
       }
     ]
   })
+}
+
+resource "aws_sns_topic" "my_notification" {
+  name = "${local.stack_prefix}-my-notification"
 }

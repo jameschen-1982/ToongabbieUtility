@@ -37,11 +37,14 @@ public class Function(
         var billedTenants = allTenants.Where(t => !string.IsNullOrEmpty(t.Sid)).ToList();
         var sensors = await amazonDynamoDb.ScanAsync<EfergySensor>(new List<ScanCondition>()).GetRemainingAsync();
 
-        await SaveWeeklyReport(sensors, mondayBeforeLastSunday, lastSunday);
+        if (request.Action is Action.All or Action.SaveWeeklyReport)
+            await SaveWeeklyReport(sensors, mondayBeforeLastSunday, lastSunday);
         
-        await SendSms(sensors, billedTenants, mondayBeforeLastSunday, lastSunday);
+        if (request.Action is Action.All or Action.SendSms)
+            await SendSms(sensors, billedTenants, mondayBeforeLastSunday, lastSunday);
         
-        await SendSns();
+        if (request.Action is Action.All or Action.SendSns)
+            await SendSns(now.DateTime);
     }
 
     private async Task SaveWeeklyReport(List<EfergySensor> sensors, DateTime mondayBeforeLastSunday, DateTime lastSunday)
@@ -196,9 +199,9 @@ public class Function(
     }
     
     
-    private async Task SendSns()
+    private async Task SendSns(DateTime utcNow)
     {
-        var reports = await PublishWeeklyDataAsync(DateTime.UtcNow);
+        var reports = await PublishWeeklyDataAsync(utcNow);
 
         logger.LogInformation("{@Reports}", reports);
 
